@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "desktop-app": {
+      "source": "popup-studio-ai/bkit-claude-code",
+      "sourceType": "github",
+      "skillPath": "skills/desktop-app/SKILL.md",
+      "computedHash": "12f81fac61ef0c0a1ed0e98f256352c0ea04a94450ca1644feab0d34b7f1b295"
+    }
+  }
+}
