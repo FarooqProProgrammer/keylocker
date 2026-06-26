@@ -1,17 +1,20 @@
 import { useState } from 'react'
 import { Category } from './types'
-import { KEYS } from './data'
+import { KEYS as INITIAL_KEYS } from './data'
 import { NavItem } from './components/NavItem'
 import { KeyCard } from './components/KeyCard'
+import { NewKeyDialog } from './components/NewKeyDialog'
 
 // ─── App ─────────────────────────────────────────────────────────────────────
 
 export default function App() {
+  const [keys, setKeys] = useState(INITIAL_KEYS)
   const [activeCategory, setActiveCategory] = useState<Category>('all')
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [search, setSearch] = useState('')
+  const [isNewKeyOpen, setIsNewKeyOpen] = useState(false)
 
-  const filtered = KEYS.filter((k) => {
+  const filtered = keys.filter((k) => {
     const matchSearch = k.name.toLowerCase().includes(search.toLowerCase()) ||
                         k.username.toLowerCase().includes(search.toLowerCase())
     if (!matchSearch) return false
@@ -27,14 +30,14 @@ export default function App() {
   })
 
   const counts = {
-    all:      KEYS.length,
-    favorites: KEYS.filter(k => k.favorite).length,
-    work:     KEYS.filter(k => k.tag === 'Work').length,
-    finance:  KEYS.filter(k => k.tag === 'Finance').length,
-    social:   KEYS.filter(k => k.tag === 'Social').length,
-    personal: KEYS.filter(k => k.tag === 'Personal').length,
-    weak:     KEYS.filter(k => k.strength === 'weak').length,
-    reused:   KEYS.filter(k => k.strength === 'medium').length,
+    all:      keys.length,
+    favorites: keys.filter(k => k.favorite).length,
+    work:     keys.filter(k => k.tag === 'Work').length,
+    finance:  keys.filter(k => k.tag === 'Finance').length,
+    social:   keys.filter(k => k.tag === 'Social').length,
+    personal: keys.filter(k => k.tag === 'Personal').length,
+    weak:     keys.filter(k => k.strength === 'weak').length,
+    reused:   keys.filter(k => k.strength === 'medium').length,
   }
 
   const TITLE_MAP: Record<Category, string> = {
@@ -145,7 +148,9 @@ export default function App() {
                                  transition-colors cursor-pointer">
                 ↕ Sort
               </button>
-              <button className="flex items-center gap-1.5 px-3 py-1.5 text-[12px]
+              <button 
+                onClick={() => setIsNewKeyOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-[12px]
                                  bg-[#1a1a2e] text-amber-400 rounded-lg hover:bg-[#24243e]
                                  transition-colors cursor-pointer border-0 font-medium">
                 + New key
@@ -194,6 +199,14 @@ export default function App() {
           </footer>
         </main>
       </div>
+
+      <NewKeyDialog 
+        isOpen={isNewKeyOpen} 
+        onClose={() => setIsNewKeyOpen(false)} 
+        onSave={(newKey) => {
+          setKeys([...keys, { ...newKey, id: Date.now() }])
+        }}
+      />
     </div>
   )
 }
